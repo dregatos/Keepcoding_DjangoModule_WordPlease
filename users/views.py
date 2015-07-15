@@ -1,3 +1,13 @@
 from django.shortcuts import render
+from django.views.generic import View
 
-# Create your views here.
+
+class LoginView(View):
+
+    pass
+
+class LogoutView(View):
+    pass
+
+class SignUpView(View):
+    pass
