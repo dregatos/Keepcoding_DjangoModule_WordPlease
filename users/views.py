@@ -4,10 +4,15 @@ from django.views.generic import View
 
 class LoginView(View):
 
-    pass
+    def get(self, request):
+        return render(request, 'users/login.html')
 
 class LogoutView(View):
-    pass
+
+    def get(self, request):
+        return render(request, 'blogs/home.html')
 
 class SignUpView(View):
-    pass
+
+    def get(self, request):
+        return render(request, 'users/sign-up.html')
