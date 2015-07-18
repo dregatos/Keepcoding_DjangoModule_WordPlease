@@ -1,6 +1,18 @@
 {% extends 'base.html' %}
 
+{% block title %} Login {% endblock%}
+
 {% block section %}
 
+    {% for error in errors %} <p>{{ error }}</p> {% endfor %}
+
+    <form method="post">
+        {% csrf_token %} <!-- Protección -->
+        {{ login_form.as_p }} <!-- Lo pintamos como parrafos, tb podemos como tabla o ul -->
+
+        <div>
+            <button>Entrar</button>
+        </div>
+    </form>
 
 {% endblock %}
