@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.core.urlresolvers import reverse
 from django.shortcuts import render, redirect
 from django.views.generic import View
 from users.forms import LoginForm
@@ -23,12 +24,11 @@ class LoginView(View):
             password = form.cleaned_data.get('pwd')
             user = authenticate(username=username, password=password)
             if user is None:
-                error_messages.append('Invalid username or password')
+                error_messages.append('Invalid username or password. Please, try again.')
             else:
                 if user.is_active:
                     django_login(request, user)
-                    url = request.GET.get('next', 'blogs_home')
-                    return redirect(url)
+                    return redirect(reverse('blog_detail', args=[username]))
                 else:
                     error_messages.append('This user is not activated. Please, check your email.')
 
