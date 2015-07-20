@@ -2,5 +2,18 @@
 
 {% block section %}
 
+    {% if posts_list|length > 0 %}
+        <h2>Latest Posts</h2>
+
+        {% for post in posts_list %}
+
+            <a href="{% url 'post_detail' username=post.blog.owner.username pk=post.pk %}">
+                <p> {{ post.title }} </p>
+            </a>
+
+        {% endfor %}
+    {% else %}
+        :( There isn't any post
+    {% endif %}
 
 {% endblock %}

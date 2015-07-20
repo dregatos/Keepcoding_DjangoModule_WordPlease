@@ -1,10 +1,22 @@
 from django.shortcuts import render
 from django.views.generic import View
+from blogs.models import Post
+
 
 class HomeView(View):
 
     def get(self, request):
-        return render(request, 'blogs/home.html')
+        """
+        Fetchs all available posts and shows latest 5 published in descending order by creation date
+        :param request:  HttpRequest
+        :return: HttpResponse
+        """
+        posts = Post.objects.order_by('-created_at')
+        context = {
+            'posts_list': posts[:5]
+        }
+
+        return render(request, 'blogs/home.html', context)
 
 class NewPostView(View):
 
