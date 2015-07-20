@@ -12,9 +12,14 @@
     <nav>
         <a href="{% url 'blogs_home' %}">Home</a>
         |
+        <a href="{% url 'blogs_list' %}">Explore</a>
         {% if user.is_authenticated %}
+            |
+            <a href="{% url 'blog_detail' username=user.username %}">My Blog</a>
+            |
             <a href="{% url 'users_logout' %}">Log out</a>
         {% else %}
+            |
             <a href="{% url 'users_login' %}">Log in</a>
             |
             <a href="{% url 'users_signup' %}">Sign up</a>
