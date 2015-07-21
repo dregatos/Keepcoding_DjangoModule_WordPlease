@@ -1,17 +1,19 @@
+from datetime import date
 from django.shortcuts import render
 from django.views.generic import View
 from blogs.models import Post
-
+from django.db.models import Q
 
 class HomeView(View):
 
     def get(self, request):
         """
-        Fetchs all available posts and shows latest 5 published in descending order by creation date
+        Fetchs latest 5 published posts.
+        Post are shown in descending order taking into account their publication_date & creation date
         :param request:  HttpRequest
         :return: HttpResponse
         """
-        posts = Post.objects.order_by('-created_at')
+        posts = Post.objects.filter(publication_date__lte=date.today).order_by('-publication_date', '-created_at')
         context = {
             'posts_list': posts[:5]
         }

@@ -9,7 +9,7 @@ class Category(models.Model):
     name = models.CharField(max_length=50)
 
     def __unicode__(self):
-        return self.name
+        return u'%s' % self.name
 
 class Blog(models.Model):
     owner = models.OneToOneField(User)      # For now we DON'T ALLOW multiple blog per user
