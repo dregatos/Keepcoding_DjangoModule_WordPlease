@@ -1,7 +1,7 @@
 from datetime import date
 from django.shortcuts import render
 from django.views.generic import View
-from blogs.models import Post
+from blogs.models import Post, Blog
 from django.db.models import Q
 
 class HomeView(View):
@@ -28,7 +28,16 @@ class NewPostView(View):
 class BlogListView(View):
 
     def get(self, request):
-        return render(request, 'blogs/blogs_list.html')
+        """
+        Fetch all available blogs
+        :param request: HttpRequest
+        :return: HttpResponse
+        """
+        blogs = Blog.objects.order_by('-created_at')
+        context = {
+            'blogs_list': blogs
+        }
+        return render(request, 'blogs/blogs_list.html', context)
 
 class BlogDetailView(View):
 
