@@ -1,0 +1,23 @@
+<table class="table table-striped table-hover">
+{% for post in posts_list %}
+    <tr>
+            <tbody data-link="row" class="rowlink">
+                    <td>
+                        {% if post.image_url|length > 0 %}
+                            <img class="img-rounded" width="110" height="70" src="{{ post.image_url }}" height="150">
+                        {% else %}
+                            <img class="img-rounded" width="110" height="70" src="http://blogdeldiseno.com/wp-content/themes/newsbold/images/default-thumbnail.jpg" height="150">
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        <a href="{% url 'post_detail' username=post.blog.owner.username pk=post.pk %}">
+                        <strong>{{ post.title }}, by {{ post.blog.owner.username }}</strong>
+                        <small>{{ post.publication_date }}</small>
+                        <div>{{ post.summary }}</div>
+                        </a>
+                    </td>
+            </tbody>
+    </tr>
+{% endfor %}
+</table>
