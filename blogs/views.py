@@ -1,9 +1,15 @@
+# -*- coding: utf-8 -*-
 from datetime import date
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
+from django.core.urlresolvers import reverse
 from django.http import HttpResponseNotFound
 from django.shortcuts import render
+from django.utils.decorators import method_decorator
 from django.views.generic import View
+from blogs.forms import PostForm
 from blogs.models import Post, Blog
+from django.contrib.auth.decorators import login_required  #importamos el decorador de login_required
+
 from django.db.models import Q
 
 class HomeView(View):
@@ -103,5 +109,37 @@ class PostDetailView(View):
 
 class NewPostView(View):
 
+    @method_decorator(login_required())
     def get(self, request):
-        return render(request, 'blogs/new_post.html')
+        form = PostForm()
+        context = {
+            'form': form,
+            'success_message': ''
+        }
+        return render(request, 'blogs/new_post.html', context)
+
+    @method_decorator(login_required())
+    def post(self, request):
+
+        success_message = ''
+
+        blogs_list = Blog.objects.filter(owner__username__exact=request.user.username)
+        if len(blogs_list) == 1:
+            post_in_blog = Post()
+            post_in_blog.blog = blogs_list[0] #asigno como propietario de la foto el usuario autenticado
+            form = PostForm(request.POST, instance=post_in_blog) #basa la instancia de la petición en la que yo te paso. Mezcla campos!!
+            if form.is_valid():
+                new_post = form.save() #Crea, guarda y devuelve el objeto
+                form = PostForm() #lo inicializamos tras guardar para que aparezca vacío de nuevo
+                #Creamos nuestro mensaje de éxito con el link a la foto
+                success_message = 'Guardado con éxito!!'
+                success_message += '<a href="{0}">'.format(reverse('post_detail', args=[request.user.username, new_post.pk]))
+                success_message += 'See post'
+                success_message += '</a>'
+            context = {
+                'form': form,
+                'success_message': success_message
+            }
+            return render(request, 'blogs/new_post.html', context)
+        else:
+            return HttpResponseNotFound('Houston, we have a problem')

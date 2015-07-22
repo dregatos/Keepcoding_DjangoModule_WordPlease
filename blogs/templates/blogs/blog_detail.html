@@ -9,6 +9,10 @@
     {% else %}
 
         <div>
+            <a href="{% url 'create_post'%}" class="btn btn-primary btn-sm" role="button">New Post</a>
+        </div>
+
+        <div>
             <h2>{{ blog.name }} <small>by {{ blog.owner.username }}</small></h2>
 
         </div>

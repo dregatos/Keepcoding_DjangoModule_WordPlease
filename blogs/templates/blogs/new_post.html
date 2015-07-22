@@ -2,5 +2,21 @@
 
 {% block section %}
 
+    <h3>New post</h3>
+
+        {% if success_message %} {{ message }} {% endif %}
+
+        <form method="post" novalidate>
+          {% csrf_token %}
+
+            <table>
+                   {{ form.as_table }}
+            </table>
+
+            <div>
+                <button>Save</button>
+            </div>
+
+        </form>
 
 {% endblock %}
