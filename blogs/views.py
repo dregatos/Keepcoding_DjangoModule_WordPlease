@@ -1,4 +1,5 @@
 from datetime import date
+from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from django.http import HttpResponseNotFound
 from django.shortcuts import render
 from django.views.generic import View
@@ -9,7 +10,7 @@ class HomeView(View):
 
     def get(self, request):
         """
-        Fetchs latest 5 published posts.
+        Fetch and Show latest 5 published posts.
         Post are shown in descending order taking into account their publication_date & creation date
         :param request:  HttpRequest
         :return: HttpResponse
@@ -30,7 +31,7 @@ class BlogListView(View):
 
     def get(self, request):
         """
-        Fetch all available blogs
+        Fetch and Show all available blogs
         :param request: HttpRequest
         :return: HttpResponse
         """
@@ -52,7 +53,7 @@ class BlogDetailView(View):
 
     def get(self, request, username):
         """
-        Fetch blog's detail of the specified user
+        Fetch and Show blog's detail of the specified user
         :param request: HttpRequest
         :param username: The username of blog's owner
         :return: HttpResponse
@@ -66,12 +67,39 @@ class BlogDetailView(View):
             }
             return render(request, 'blogs/blog_detail.html', context)
         else:
-            return HttpResponseNotFound('This blog doesn\'t exist')
+            return HttpResponseNotFound('The blog doesn\'t exist')
 
 class PostDetailView(View):
 
     def get(self, request, username, pk):
-        return render(request, 'blogs/post_detail.html')
+        """
+        Fetch and Show all available information of a post
+        :param request: HttpRequest
+        :param username: Blog's owner username
+        :param pk: Post id
+        :return: HttpResponse
+        """
+        #Handling errors using try-except
+        try:
+            post = Post.objects.get(blog__owner__username__exact=username, publication_date__lte=date.today, pk=pk) #.select_related('categories').all()
+            #categories = post.category_set.all().order_by('name')
+            context = {
+                'post': post,
+                #'categories': categories,
+                'message': None
+            }
+        except ObjectDoesNotExist:
+            context = {
+                'post': None,
+                'message': 'Post not found'
+            }
+        except MultipleObjectsReturned:
+            context = {
+                'post': None,
+                'message': 'Houston, we have a problem'
+            }
+
+        return render(request, 'blogs/post_detail.html', context)
 
 class NewPostView(View):
 

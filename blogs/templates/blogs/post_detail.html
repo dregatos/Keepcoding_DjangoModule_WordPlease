@@ -2,5 +2,42 @@
 
 {% block section %}
 
+    {% if message|length > 0 %}
+
+        {% include 'blogs/error_message.html' with error_message=message %}
+
+    {% else %}
+        <div>
+            <small>
+                Publicated: {{ post.publication_date }}
+            </small>
+        </div>
+
+        <div>
+            <h2>{{ post.title }}</h2>
+        </div>
+
+        <div>
+            <h3>{{ post.summary }}</h3>
+        </div>
+
+        {% if post.image_url|length > 0 %}
+            <img class="img-rounded" width="110" height="70" src="{{ post.image_url }}" height="150">
+        {% else %}
+            <img class="img-rounded" width="110" height="70" src="http://blogdeldiseno.com/wp-content/themes/newsbold/images/default-thumbnail.jpg" height="150">
+        {% endif %}
+
+        <div>
+            {{ post.text }}
+        </div>
+
+        <div>
+            <small>
+                {% if post.categories.all|length > 0 %} Categories:  {% else %} Category:  {% endif %}
+                {% for category in post.categories.all %} {{ category.name }} | {% endfor %}
+            </small>
+        </div>
+
+    {% endif %}
 
 {% endblock %}
