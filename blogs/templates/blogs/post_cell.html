@@ -12,12 +12,19 @@
 
                 <td>
                     <a href="{% url 'post_detail' username=post.blog.owner.username pk=post.pk %}">
-                    <strong>{{ post.title }}, by {{ post.blog.owner.username }}</strong>
-                    <small>{{ post.publication_date }}</small>
-                    <div>{{ post.summary }}</div>
+
+                        <strong>{{ post.title }}</strong>
+
+                        <div>
+                            <small>by {{ post.blog.owner.username}}, {{ post.publication_date }}</small>
+
+                        </div>
+
+                        <div>{{ post.summary }}</div>
                     </a>
                 </td>
         </tbody>
     </tr>
 {% endfor %}
+
 </table>

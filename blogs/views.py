@@ -15,16 +15,16 @@ class HomeView(View):
         :return: HttpResponse
         """
         posts = Post.objects.filter(publication_date__lte=date.today).order_by('-publication_date', '-created_at')
-        context = {
-            'posts_list': posts[:5]
-        }
+        if len(posts) > 0:
+            context = {
+                'posts_list': posts[:5]
+            }
+        else:
+            context = {
+                'message': ':( There isn\'t any published post'
+            }
 
         return render(request, 'blogs/home.html', context)
-
-class NewPostView(View):
-
-    def get(self, request):
-        return render(request, 'blogs/new_post.html')
 
 class BlogListView(View):
 
@@ -35,9 +35,17 @@ class BlogListView(View):
         :return: HttpResponse
         """
         blogs = Blog.objects.order_by('-created_at')
-        context = {
-            'blogs_list': blogs
-        }
+        if len(blogs) > 0:
+            context = {
+                'blogs_list': blogs,
+                'message': None
+            }
+        else:
+            context = {
+                'blogs_list': None,
+                'message': 'No blog available'
+            }
+
         return render(request, 'blogs/blogs_list.html', context)
 
 class BlogDetailView(View):
@@ -49,7 +57,7 @@ class BlogDetailView(View):
         :param username: The username of blog's owner
         :return: HttpResponse
         """
-        blogs_list = Blog.objects.filter(owner__username__exact=username)
+        blogs_list = Blog.objects.filter(owner__username__exact=username) #.prefeched_related('post').all()
         if len(blogs_list) == 1:
             posts = blogs_list[0].post_set.all().order_by('-publication_date', '-created_at')
             context = {
@@ -64,3 +72,8 @@ class PostDetailView(View):
 
     def get(self, request, username, pk):
         return render(request, 'blogs/post_detail.html')
+
+class NewPostView(View):
+
+    def get(self, request):
+        return render(request, 'blogs/new_post.html')

@@ -2,12 +2,16 @@
 
 {% block section %}
 
-    {% if posts_list|length > 0 %}
+    {% if message|length > 0 %}
+
+        {% include 'blogs/error_message.html' with error_message=message %}
+
+    {% else %}
+
         <h2>Latest Posts</h2>
 
         {% include 'blogs/post_cell.html' %}
-    {% else %}
-        :( There isn't any post
+
     {% endif %}
 
 {% endblock %}

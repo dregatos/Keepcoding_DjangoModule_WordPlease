@@ -2,18 +2,29 @@
 
 {% block section %}
 
-    <div><h2>{{ blog.name }}</h2></div>
+    {% if message|length > 0 %}
 
-    {% if blog.description|length > 0 %}
-        <div>{{ blog.description }}</div>
-    {% endif %}
+        {% include 'blogs/error_message.html' with error_message=message %}
 
-    <div>
-        {% if posts_list|length > 0 %}
-            {% include 'blogs/post_cell.html' %}
-        {% else %}
-            :( There isn't any post
+    {% else %}
+
+        <div>
+            <h2>{{ blog.name }} <small>by {{ blog.owner.username }}</small></h2>
+
+        </div>
+
+        {% if blog.description|length > 0 %}
+            <div>{{ blog.description }} </div>
         {% endif %}
-    </div>
+
+        <div>
+            {% if posts_list|length > 0 %}
+                {% include 'blogs/post_cell.html' %}
+            {% else %}
+                :( There isn't any post
+            {% endif %}
+        </div>
+
+    {% endif %}
 
 {% endblock %}

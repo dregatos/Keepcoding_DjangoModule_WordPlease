@@ -2,14 +2,22 @@
 
 {% block section %}
 
-    {% for blog in blogs_list %}
+    {% if message|length > 0 %}
 
-        <li>
-            <a href="{% url 'blog_detail' username=blog.owner.username %}">
-                <strong>{{ blog.name }}</strong> <small>created by {{ blog.owner.username }} </small>
-            </a>
-        </li>
+        {% include 'blogs/error_message.html' with error_message=message %}
 
-    {% endfor %}
+    {% else %}
+
+        {% for blog in blogs_list %}
+
+            <li>
+                <a href="{% url 'blog_detail' username=blog.owner.username %}">
+                    <h4>{{ blog.name }} <small>created by {{ blog.owner.username }} </small></h4>
+                </a>
+            </li>
+
+        {% endfor %}
+
+    {% endif %}
 
 {% endblock %}
