@@ -1,4 +1,5 @@
 from datetime import date
+from django.http import HttpResponseNotFound
 from django.shortcuts import render
 from django.views.generic import View
 from blogs.models import Post, Blog
@@ -42,7 +43,22 @@ class BlogListView(View):
 class BlogDetailView(View):
 
     def get(self, request, username):
-        return render(request, 'blogs/blog_detail.html')
+        """
+        Fetch blog's detail of the specified user
+        :param request: HttpRequest
+        :param username: The username of blog's owner
+        :return: HttpResponse
+        """
+        blogs_list = Blog.objects.filter(owner__username__exact=username)
+        if len(blogs_list) == 1:
+            posts = blogs_list[0].post_set.all().order_by('-publication_date', '-created_at')
+            context = {
+                'blog': blogs_list[0],
+                'posts_list': posts
+            }
+            return render(request, 'blogs/blog_detail.html', context)
+        else:
+            return HttpResponseNotFound('This blog doesn\'t exist')
 
 class PostDetailView(View):
 

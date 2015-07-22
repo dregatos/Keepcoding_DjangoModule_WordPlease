@@ -2,5 +2,18 @@
 
 {% block section %}
 
+    <div><h2>{{ blog.name }}</h2></div>
+
+    {% if blog.description|length > 0 %}
+        <div>{{ blog.description }}</div>
+    {% endif %}
+
+    <div>
+        {% if posts_list|length > 0 %}
+            {% include 'blogs/post_cell.html' %}
+        {% else %}
+            :( There isn't any post
+        {% endif %}
+    </div>
 
 {% endblock %}
