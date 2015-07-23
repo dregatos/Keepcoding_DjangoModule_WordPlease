@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
+from django.contrib.auth.forms import UserCreationForm
 from django.core.urlresolvers import reverse
+from django.http import HttpResponseNotFound
 from django.shortcuts import render, redirect
 from django.views.generic import View
-from users.forms import LoginForm
+from blogs.models import Blog
+from users.forms import LoginForm, RegistrationForm
 from django.contrib.auth import logout as django_logout, authenticate, login as django_login
 
 class LoginView(View):
@@ -48,4 +51,29 @@ class LogoutView(View):
 class SignUpView(View):
 
     def get(self, request):
-        return render(request, 'users/sign-up.html')
+        error_messages = []
+        form = RegistrationForm()
+        context = {
+            'errors': error_messages,
+            'signup_form': form
+        }
+        return render(request, 'users/sign-up.html', context)
+
+    def post(self, request):
+
+        form = RegistrationForm(request.POST)
+        if form.is_valid():
+
+            new_user = form.save()
+
+            blog_for_newUser = Blog()
+            blog_for_newUser.owner = new_user
+            blog_for_newUser.name = new_user.first_name + ' ' +new_user.last_name + '\'s Personal Blog'
+            blog_for_newUser.save()
+
+            return redirect(reverse('blog_detail', args=[new_user]))
+        else:
+            context = {
+                'signup_form': form
+            }
+            return render(request, 'users/sign-up.html', context)
