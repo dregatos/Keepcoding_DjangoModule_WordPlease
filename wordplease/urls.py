@@ -1,6 +1,7 @@
+# -*- coding: utf-8 -*-
 from django.conf.urls import include, url
 from django.contrib import admin
-from users import urls as users_urls
+from users import urls as users_urls, api_urls as users_api_urls
 from blogs import urls as blogs_urls
 
 urlpatterns = [
@@ -8,6 +9,7 @@ urlpatterns = [
 
      #Users URLs
     url(r'', include(users_urls)),
+    url(r'api/', include(users_api_urls)),
 
      #Blogs URLs
     url(r'', include(blogs_urls)),
