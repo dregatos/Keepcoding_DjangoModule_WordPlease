@@ -12,6 +12,22 @@ from django.contrib.auth.decorators import login_required  #importamos el decora
 
 from django.db.models import Q
 
+class PostsQueryset(object):
+
+    def get_posts_queryset(self, request):
+
+        if not request.user.is_authenticated():
+            # si no está autenticado -> TODOS los artículos PUBLICADOS
+            posts = Post.objects.filter(publication_date__lte=date.today)
+        elif request.user.is_superuser:
+            # si es adminsitrador -> TODOS los artículos
+            posts = Post.objects.all()
+        else:
+            # si no es admin y está autenticado -> TODOS los artículos de ESE usuario
+            posts = Post.objects.filter(Q(owner__username__exact=request.user.username) | Q(publication_date__lte=date.today))
+
+        return posts.order_by('-publication_date', '-created_at')
+
 class HomeView(View):
 
     def get(self, request):
