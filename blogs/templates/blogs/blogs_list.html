@@ -12,7 +12,7 @@
 
             <li>
                 <a href="{% url 'blog_detail' username=blog.owner.username %}">
-                    <h4>{{ blog.name }} <small>created by {{ blog.owner.username }} </small></h4>
+                    <h4>{{ blog.name }} <small>created by {{ blog.owner.first_name }} {{ blog.owner.last_name }}   </small></h4>
                 </a>
             </li>
 

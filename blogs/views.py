@@ -82,10 +82,16 @@ class BlogDetailView(View):
         """
         blogs_list = Blog.objects.filter(owner__username__exact=username) #.prefeched_related('post').all()
         if len(blogs_list) == 1:
-            posts = blogs_list[0].post_set.all().order_by('-publication_date', '-created_at')
+            if request.user.username == username:
+                published_posts = blogs_list[0].post_set.filter(publication_date__lte=date.today).order_by('-publication_date', '-created_at')
+                unpublished_posts = blogs_list[0].post_set.filter(publication_date__gt=date.today).order_by('-publication_date', '-created_at')
+            else:
+                published_posts = blogs_list[0].post_set.filter(publication_date__lte=date.today).order_by('-publication_date', '-created_at')
+                unpublished_posts = None
             context = {
                 'blog': blogs_list[0],
-                'posts_list': posts
+                'published_posts': published_posts,
+                'unpublished_posts': unpublished_posts
             }
             return render(request, 'blogs/blog_detail.html', context)
         else:
@@ -103,11 +109,12 @@ class PostDetailView(View):
         """
         #Handling errors using try-except
         try:
-            post = Post.objects.get(blog__owner__username__exact=username, publication_date__lte=date.today, pk=pk) #.select_related('categories').all()
+            post = Post.objects.get(blog__owner__username__exact=username, pk=pk) #.select_related('categories').all()
             #categories = post.category_set.all().order_by('name')
+            is_published = True if post.publication_date <= date.today() else False
             context = {
                 'post': post,
-                #'categories': categories,
+                'is_published': is_published,
                 'message': None
             }
         except ObjectDoesNotExist:

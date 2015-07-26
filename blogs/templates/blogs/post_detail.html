@@ -9,7 +9,11 @@
     {% else %}
         <div>
             <small>
-                Publicated: {{ post.publication_date }}
+                {% if is_published %}
+                    Published: {{ post.publication_date }}
+                {% else %}
+                    Unpublished: {{ post.publication_date }}
+                {% endif %}
             </small>
         </div>
 

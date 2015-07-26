@@ -8,13 +8,14 @@
 
     {% else %}
 
+        {% if blog.owner == user %}
         <div>
             <a href="{% url 'create_post'%}" class="btn btn-primary btn-sm" role="button">New Post</a>
         </div>
+        {% endif %}
 
         <div>
             <h2> {{ blog.name }} </h2>
-
         </div>
 
         {% if blog.description|length > 0 %}
@@ -22,12 +23,17 @@
         {% endif %}
 
         <div>
-            {% if posts_list|length > 0 %}
-                {% include 'blogs/post_cell.html' %}
+            {% if published_posts|length > 0 %}
+                {% include 'blogs/post_cell.html' with posts_list=published_posts %}
             {% else %}
                 Go ahead, create your first awesome post!!
             {% endif %}
         </div>
+
+        {% if unpublished_posts|length > 0 %}
+             <h4>Unpublished</h4>
+            {% include 'blogs/post_cell.html' with posts_list=unpublished_posts %}
+        {% endif %}
 
     {% endif %}
 

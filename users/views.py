@@ -71,7 +71,7 @@ class SignUpView(View):
             blog_for_newUser.name = new_user.first_name + ' ' +new_user.last_name + '\'s Personal Blog'
             blog_for_newUser.save()
 
-            return redirect(reverse('blog_detail', args=[new_user]))
+            return redirect(reverse('users_login'))
         else:
             context = {
                 'signup_form': form
