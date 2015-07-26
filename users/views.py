@@ -66,6 +66,7 @@ class SignUpView(View):
 
             new_user = form.save()
 
+            # TODO - crear el usuario y su blog en una sóla llamada
             blog_for_newUser = Blog()
             blog_for_newUser.owner = new_user
             blog_for_newUser.name = new_user.first_name + ' ' +new_user.last_name + '\'s Personal Blog'

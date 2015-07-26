@@ -9,7 +9,6 @@ from django.views.generic import View
 from blogs.forms import PostForm
 from blogs.models import Post, Blog
 from django.contrib.auth.decorators import login_required  #importamos el decorador de login_required
-
 from django.db.models import Q
 
 class PostsQueryset(object):
@@ -24,7 +23,7 @@ class PostsQueryset(object):
             posts = Post.objects.all()
         else:
             # si no es admin y está autenticado -> TODOS los artículos de ESE usuario
-            posts = Post.objects.filter(Q(owner__username__exact=request.user.username) | Q(publication_date__lte=date.today))
+            posts = Post.objects.filter(Q(blog__owner__username__exact=request.user.username) | Q(publication_date__lte=date.today))
 
         return posts.order_by('-publication_date', '-created_at')
 

@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import AllowAny
 from blogs.models import Blog, Post
+from blogs.permissions import PostPermission
 from blogs.serializers import BlogSerializer, PostListSerializer, PostSerializer
 from rest_framework.viewsets import ModelViewSet
 from blogs.views import PostsQueryset
@@ -10,6 +11,7 @@ from blogs.views import PostsQueryset
 class BlogViewSet(ModelViewSet):
 
     queryset = Blog.objects.all()
+    permission_classes = (AllowAny,)
 
     def get_serializer_class(self):
         return BlogSerializer
@@ -17,7 +19,8 @@ class BlogViewSet(ModelViewSet):
 class PostViewSet(PostsQueryset, ModelViewSet):
 
     queryset = Post.objects.all()
-    permission_classes = (IsAuthenticatedOrReadOnly,)
+    pagination_class = PageNumberPagination
+    permission_classes = (PostPermission,)
 
     def get_queryset(self):
         return self.get_posts_queryset(self.request)

@@ -6,6 +6,7 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.viewsets import GenericViewSet
+from blogs.models import Blog
 from users.permissions import UserPermission
 from users.serializers import UserSerializer
 
@@ -33,6 +34,13 @@ class UserViewSet (GenericViewSet):
         serializer = UserSerializer(data=request.data) #TODOS LOS MÉTODOS REST VIENEN POR EL PARAMETRO 'DATA' DE LA REQUEST
         if serializer.is_valid():
             new_user = serializer.save()
+
+            # TODO - crear el usuario y su blog en una sóla llamada
+            blog_for_newUser = Blog()
+            blog_for_newUser.owner = new_user
+            blog_for_newUser.name = new_user.first_name + ' ' + new_user.last_name + '\'s Personal Blog'
+            blog_for_newUser.save()
+
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
