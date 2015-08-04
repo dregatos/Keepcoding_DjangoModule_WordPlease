@@ -1,17 +1,15 @@
 # -*- coding: utf-8 -*-
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.permissions import AllowAny
 from blogs.models import Blog, Post
 from blogs.permissions import PostPermission
 from blogs.serializers import BlogSerializer, PostListSerializer, PostSerializer
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from blogs.views import PostsQueryset
 from rest_framework.filters import SearchFilter, OrderingFilter
 
-class BlogViewSet(ModelViewSet):
+class BlogViewSet(ReadOnlyModelViewSet):
 
     queryset = Blog.objects.all()
-    permission_classes = (AllowAny,)
     filter_backends = (SearchFilter, OrderingFilter)
     search_fields = ('owner__username')
     ordering_fields = ('name')
